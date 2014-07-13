@@ -1,0 +1,17 @@
+{
+  "name": "divideandconquer/dson-zf2",
+  "description": "A DSON library that can be used stand alone or as a Zend Framework 2 Module",
+  "license": "Apache-2.0",
+  "keywords": [
+    "dson",
+    "zf2",
+    "dogeon"
+  ],
+  "homepage": "https://github.com/divideandconquer/dson-zf2",
+  "autoload": {
+    'psr-0': {
+      "Dson\\": "src/",
+      "DsonTest\\": "test/"
+    }
+  }
+}
