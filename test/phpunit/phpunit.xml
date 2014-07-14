@@ -1,0 +1,7 @@
+<phpunit colors="true">
+    <testsuites>
+        <testsuite name="Dson Tests">
+            <directory>./DsonTest</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

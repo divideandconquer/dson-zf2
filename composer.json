@@ -7,11 +7,14 @@
     "zf2",
     "dogeon"
   ],
+  "require-dev": {
+    "phpunit/phpunit": "4.1.*"
+  },
   "homepage": "https://github.com/divideandconquer/dson-zf2",
   "autoload": {
-    'psr-0': {
+    "psr-0": {
       "Dson\\": "src/",
-      "DsonTest\\": "test/"
+      "DsonTest\\": "test/phpunit/"
     }
   }
 }
