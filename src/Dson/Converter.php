@@ -31,7 +31,7 @@ class Converter
   {
     $result = $this->recursiveEncode($input);
     //strip extra spaces
-    $result = preg_replace('/\s\s+/', ' ', $result);
+    $result = trim(preg_replace('/\s\s+/', ' ', $result));
     return $result;
   }
 
