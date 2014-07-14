@@ -9,17 +9,16 @@ namespace Dson;
  */
 class Converter
 {
-  protected $objectPairJoiners = array(' ? ', ' , ', ' . ', ' ! ');
-  protected $arrayPairJoiners = array(' also ', ' and ');
+  protected $objectPairJoiners = array(' ?', ' ,', ' .', ' !');
+  protected $arrayPairJoiners = array(' also', ' and');
   protected $stringEscapeMap = array(
-    '"'   => ' what is? ',
-    '\\'  => ' dont know. ',
-    '/'  => ' very scare. ',
-    'b'  => ' warn. ',
-    'f'  => ' much run? ',
-    'n'  => ' so freighten. ',
-    'r'  => ' stay. ',
-    't'  => ' be brave shibe. '
+    '"'   => 'what is?',
+    '/'  => 'very scare.',
+    'b'  => 'warn.',
+    'f'  => 'much run?',
+    'n'  => 'so freighten.',
+    'r'  => 'stay.',
+    't'  => 'be brave shibe.'
   );
 
   /**
@@ -31,7 +30,7 @@ class Converter
   {
     $result = $this->recursiveEncode($input);
     //strip extra spaces
-    $result = trim(preg_replace('/\s\s+/', ' ', $result));
+    $result = trim($result);
     return $result;
   }
 
@@ -45,7 +44,7 @@ class Converter
     $result = '';
     if (is_array($input) === true && $this->isAssoc($input) === false) { //this is a standard array
       //open array context
-      $result .= ' so ';
+      $result .= ' so';
       //setup modulo counter to determine joiner word
       $counter = 0;
       foreach ($input as $cur) {
@@ -53,11 +52,11 @@ class Converter
         if ($counter > 0) {
           $result .= $this->arrayPairJoiners[$counter % 2];
         }
-        $result .= $this->encode($cur);
+        $result .= $this->recursiveEncode($cur);
         $counter++;
       }
       //close array context
-      $result .= ' many ';
+      $result .= ' many';
     } else if (is_object($input) === true || (is_array($input) === true && $this->isAssoc($input) === true)) {
       if (is_object($input) === true) {
         $input = (array)$input;
@@ -65,7 +64,7 @@ class Converter
       //setup modulo counter for
       $counter = 0;
       //open object context
-      $result .= ' such ';
+      $result .= ' such';
       foreach($input as $key => $value)
       {
         //add the object pair joiner if we need to
@@ -73,11 +72,11 @@ class Converter
           $result .= $this->objectPairJoiners[$counter % 4];
         }
         //determine the pair text
-        $result .= ' ' . $this->escapeString($key) . ' is ' . $this->recursiveEncode($value);
+        $result .= ' ' . $this->escapeString($key) . ' is' . $this->recursiveEncode($value);
         $counter++;
       }
       //close object context
-      $result .= ' wow ';
+      $result .= ' wow';
     } else if (is_bool($input) === true){ //we have a bool
       //handle special cases for boolean
       if ($input === true) {
@@ -85,13 +84,13 @@ class Converter
       } else {
         $input = 'no';
       }
-      $result .= ' '. $input . ' ';
+      $result .= ' '. $input;
     } else if (is_int($input) === true || is_double($input) === true) {
       $result .= ' ' . $this->encodeNumber($input);
     } else if (is_string($input) === true) {
-      $result .= ' ' . $this->escapeString($input) . ' ';
+      $result .= ' ' . $this->escapeString($input);
     } else if (is_null($input) === true) {
-      $result .= ' empty ';
+      $result .= ' empty';
     }
 
     return $result;
@@ -109,7 +108,7 @@ class Converter
     $escaping = false;
     for ($i=0; $i<$length; $i++) {
       if ($escaping === false) {
-        if($string[$i] === '\\'){
+        if ($string[$i] === '\\') { //this matches the backslash in \n \t etc.. but also the combined character \\
           $escaping = true;
         } else if ($string[$i] === '"') {
           $result .= $this->stringEscapeMap[$string[$i]];
@@ -120,11 +119,13 @@ class Converter
         $result .= '\\u';
         $escaping = false;
       } else { //escaping
-        $result .= isset($this->stringEscapeMap[$string[$i]]) ? $this->stringEscapeMap[$string[$i]] : '';
+        // if the string contains \\ php treats that as a single character so $string[$i] will be the following
+        // character in that case.  So print 'dont know.' followed by the next character.
+        $result .= isset($this->stringEscapeMap[$string[$i]]) ? $this->stringEscapeMap[$string[$i]] : 'dont know.' . $string[$i];
         $escaping = false;
       }
     }
-    return '"'.$string.'"';
+    return '"'.$result.'"';
   }
 
   /**
@@ -134,6 +135,7 @@ class Converter
    */
   protected function encodeNumber($number)
   {
+    //TODO fix for floats/doubles
     $octal = decoct($number);
     return str_replace('e', 'very', $octal);
   }

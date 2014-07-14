@@ -87,6 +87,13 @@ class ConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($actual, $expected);
   }
 
+  public function testStringEscape()
+  {
+    $input = 'She said \\ \"Hello\" \n';
+    $expected = '"She said dont know. what is?Hellowhat is? so freighten."';
+    $this->assertEncode($input, $expected);
+  }
+
 //  protected function assertDecode($original, $encoded)
 //  {
 //    $this->assertEquals($original, $this->dson->decode($this->dson->encode($original)));
